@@ -10,11 +10,24 @@
 <div style="margin-top: 300px">
     <div class="columns">
         <div class="column is-6 is-offset-3">
+            {% if form.errors %}
+                <div class="notification is-danger">
+                    <button class="delete" type="button"></button>
+                    {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                        {% for error in field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div class="has-text-centered">
-                <p class="control">
-                    <input class="input is-large" type="text" placeholder="请输入电影名">
-                </p>
-                <a class="button is-info is-large">搜索</a>
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <p class="control">
+                        {{ form.keywords(class="input is-large", placeholder="请输入电影名") }}
+                    </p>
+                    {{ form.submit(class="button is-info is-large") }}
+                </form>
             </div>
         </div>
     </div>

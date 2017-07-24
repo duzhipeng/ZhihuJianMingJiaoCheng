@@ -9,48 +9,41 @@
 <div style="margin-top: 300px">
     <div class="columns">
         <div class="column is-6 is-offset-3">
+            {% if form.errors %}
+                <div class="notification is-danger">
+                    <button class="delete" type="button"></button>
+                    {% for field_name, field_errors in form.errors|dictsort if field_errors %}
+                        {% for error in field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
             <div class="has-text-centered">
-                <p class="control">
-                    <input class="input is-large" type="text" placeholder="请输入电影名">
-                </p>
-                <a class="button is-info is-large">搜索</a>
+                <form action="" method="post">
+                    {{ form.hidden_tag() }}
+                    <p class="control">
+                        {{ form.keywords(class="input is-large", placeholder="请输入电影名") }}
+                    </p>
+                    {{ form.submit(class="button is-info is-large") }}
+                </form>
             </div>
         </div>
     </div>
-    <div class="columns">
-        <div class="column is-4">
-            <div class="box">
-                <div class="has-text-centered">
-                    <img src="../static/mv_images.png" alt="">
-                    <p>机器人9号</p>
-                    <p>上映年份：2015年</p>
-                    <p>豆瓣评分：9.8</p>
-                    <p><a href="" target="_blank">去豆瓣电影查看详情</a></p>
+    <div class="columns is-multiline">
+        {% for item in data %}
+            <div class="column is-4">
+                <div class="box">
+                    <div class="has-text-centered">
+                        <img src="{{ item.images.medium }}" alt="">
+                        <p>{{ item.title }}</p>
+                        <p>上映年份：{{ item.year }}年</p>
+                        <p>豆瓣评分：{{ item.rating.average }}</p>
+                        <p><a href="{{ item.alt }}" target="_blank">去豆瓣电影查看详情</a></p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="column is-4">
-            <div class="box">
-                <div class="has-text-centered">
-                    <img src="../static/mv_images.png" alt="">
-                    <p>机器人9号</p>
-                    <p>上映年份：2015年</p>
-                    <p>豆瓣评分：9.8</p>
-                    <p><a href="" target="_blank">去豆瓣电影查看详情</a></p>
-                </div>
-            </div>
-        </div>
-        <div class="column is-4">
-            <div class="box">
-                <div class="has-text-centered">
-                    <img src="../static/mv_images.png" alt="">
-                    <p>机器人9号</p>
-                    <p>上映年份：2015年</p>
-                    <p>豆瓣评分：9.8</p>
-                    <p><a href="" target="_blank">去豆瓣电影查看详情</a></p>
-                </div>
-            </div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 </body>
