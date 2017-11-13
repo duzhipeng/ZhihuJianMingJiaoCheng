@@ -2,36 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="../static/bulma-0.3.2/css/bulma.css">
+    <!-- 引入样式 替换掉bulma -->
+    <link rel="stylesheet" href="../static/element-ui.css">
     <title>{这里修改成你的小项目的名称}</title>
 </head>
 <body>
+<div id="app">
 
-<div style="margin-top: 300px">
-    <div class="columns">
-        <div class="column is-6 is-offset-3">
-            {% if form.errors %}
-                <div class="notification is-danger">
-                    <button class="delete" type="button"></button>
-                    {% for field_name, field_errors in form.errors|dictsort if field_errors %}
-                        {% for error in field_errors %}
-                            {{ error }}
-                        {% endfor %}
-                    {% endfor %}
+    <div style="margin-top: 300px">
+        <div class="columns">
+            <div class="column is-6 is-offset-3">
+                <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+                    <el-form-item prop="message">
+                        <el-input v-model="form.message" placeholder="关键字"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="onSubmit('form')">查询</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </div>
+    </div>
+    <div v-if="get_movies">
+        <div v-for="item in movies" class="column is-4">
+            <div class="box">
+                <div class="has-text-centered">
+                    <img :src="item.images.medium" alt="">
+                    <p v-text="item.title"></p>
+                    <p>上映年份：<span v-text="item.year"></span>年</p>
+                    <p>豆瓣评分：<span v-text="item.rating.average"></span></p>
+                    <p><a :href="item.alt" target="_blank">去豆瓣电影查看详情</a></p>
                 </div>
-            {% endif %}
-            <div class="has-text-centered">
-                <form action="" method="post">
-                    {{ form.hidden_tag() }}
-                    <p class="control">
-                        {{ form.keywords(class="input is-large", placeholder="请输入电影名") }}
-                    </p>
-                    {{ form.submit(class="button is-info is-large") }}
-                </form>
             </div>
         </div>
     </div>
 </div>
 
+<script src="../static/jsonp.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<!-- 引入组件库 -->
+<script src="../static/element-ui.js"></script>
+<script>
+
+    new Vue({
+        el: '#app',
+        data: {
+            form: {
+                message: ''
+            },
+            rules: {
+                message: [
+                    {required: true, message: '请输入要查询的电影或电视剧的名称。', trigger: 'blur'}
+                ]
+            },
+            movies: [],
+            get_movies: false
+        },
+        methods: {
+            onSubmit(formName) {
+                let self = this;
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        jsonp('https://api.douban.com/v2/movie/search?q=' + this.form.message, null, function (err, data) {
+                            if (err) {
+                                return false;
+                            } else {
+                                self.movies = data.subjects;
+                                self.get_movies = true;
+                            }
+                        })
+                    } else {
+                        return false;
+                    }
+                });
+            }
+        }
+    })
+</script>
 </body>
 </html>
