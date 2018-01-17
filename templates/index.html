@@ -8,34 +8,32 @@
 </head>
 <body>
 <div id="app">
+    <div style="margin: 300px auto 100px; max-width: 650px; text-align: center">
+        <el-form ref="form" :model="form" :rules="rules">
+            <el-form-item prop="message">
+                <el-input v-model="form.message" placeholder="关键字"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="onSubmit('form')">查询</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
 
-    <div style="margin-top: 300px">
-        <div class="columns">
-            <div class="column is-6 is-offset-3">
-                <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-                    <el-form-item prop="message">
-                        <el-input v-model="form.message" placeholder="关键字"></el-input>
-                    </el-form-item>
-                    <el-form-item>
-                        <el-button type="primary" @click="onSubmit('form')">查询</el-button>
-                    </el-form-item>
-                </el-form>
-            </div>
-        </div>
-    </div>
-    <div v-if="get_movies">
-        <div v-for="item in movies" class="column is-4">
-            <div class="box">
-                <div class="has-text-centered">
-                    <img :src="item.images.medium" alt="">
-                    <p v-text="item.title"></p>
-                    <p>上映年份：<span v-text="item.year"></span>年</p>
-                    <p>豆瓣评分：<span v-text="item.rating.average"></span></p>
-                    <p><a :href="item.alt" target="_blank">去豆瓣电影查看详情</a></p>
+    <el-row style="margin: 20px auto;max-width: 1200px" v-if="get_movies" :gutter="20">
+        <el-col style="margin-bottom: 40px;" v-for="item in movies" :span="6">
+            <el-card :body-style="{ padding: '0px' }">
+                <div style="height: 250px;overflow: hidden"><img style="width: 100%;display: block;"
+                                                                 :src="item.images.large" alt=""></div>
+                <div style="text-align: center">
+                    <p v-text="item.title" style="font-size: 16px;"></p>
+                    <p style="font-size: 11px;color: #6f7180">上映年份：<span v-text="item.year"></span>年</p>
+                    <p><el-tag type="success">豆瓣评分：<span v-text="item.rating.average"></span></el-tag></p>
+                    <p><a :href="item.alt" target="_blank"><el-button type="text">去豆瓣电影查看详情</el-button></a></p>
                 </div>
-            </div>
-        </div>
-    </div>
+            </el-card>
+        </el-col>
+    </el-row>
+
 </div>
 
 <script src="../static/jsonp.js"></script>
